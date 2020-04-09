@@ -7,82 +7,83 @@ import net.mamoe.mirai.console.plugins.Config;
 import net.mamoe.mirai.console.plugins.PluginBase;
 import org.jetbrains.annotations.NotNull;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
+import java.io.*;
+import java.util.*;
 
 
 class Main extends PluginBase {
-    private Config config;
-    private Rcon rcon;
-    public static Boolean isPE = true;
+    private Map<Long, Config> configs = new LinkedHashMap<Long, Config>();
+    private Map<Long, Rcon> rcons = new LinkedHashMap<Long, Rcon>();
+    private List<Long> defaultList;
 
     public void onLoad(){
-        config = this.loadConfig("config.yml");
-        config.setIfAbsent("serverAdder填写", "服务器地址,填写你服务器地址即可");
-        config.setIfAbsent("serverAdder", "");
-        config.setIfAbsent("serverPort填写", "服务器端口,填写你服务器端口即可");
-        config.setIfAbsent("serverPort", 0);
-        config.setIfAbsent("passworld填写", "服务器Rcon密码 在server.properties文件内找到rcon.password");
-        config.setIfAbsent("passworld", "");
-        config.setIfAbsent("isPe填写", "如果是PE服务器填写true 如果是pc服务器填写false");
-        config.setIfAbsent("isPe", true);
-        config.setIfAbsent("怎么开启Rcon", "在server.properties找到enable-rcon=off改为on即可!不行自行百度.");
-        config.setIfAbsent("注意", "填写完成重载一下即可/reload");
-        config.save();
+        defaultList = new LinkedList<Long>();
+        defaultList.add(123456L);
+        checkSample();
+        loadConfigFiles();
         super.onLoad();
     }
 
     @Override
     public void onDisable() {
+        disconnects();
+        configs.clear();
         super.onDisable();
-        if (rcon!=null){
-            try {
-                rcon.disconnect();
-                rcon = null;
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
     }
 
     public void onEnable(){
-        if (!config.getString("serverAdder").equals("") && config.getInt("serverPort")!=0 && !config.getString("passworld").equals("")) {
-            isPE = config.getBoolean("isPe");
-            if (!connected()){
-                getLogger().info("连接Rcon服务器失败！请检查密码和服务器地址连通性。");
-                return;
-            }
-            JCommandManager.getInstance().register(this, new BlockingCommand(
-                    "c", new ArrayList<>(), "向服务器发送命令用法/c 命令", "/c 命令"
-            ) {
-                @Override
-                public boolean onCommandBlocking(@NotNull CommandSender commandSender, @NotNull List<String> list) {
-                    if (rcon!=null){
-                        String command = utils.listToString(list, ' ');
-                        try {
-                            commandSender.sendMessageBlocking(command(command));
-                        } catch (IOException e) {
-                            getLogger().info("重新连接...");
-                            if (!connected()){
-                                commandSender.sendMessageBlocking("连接Rcon服务器失败！请检查密码和服务器地址连通性。");
-                                return true;
-                            }
-                            try {
-                                commandSender.sendMessageBlocking(command(command));
-                            } catch (IOException ex) {
-                                ex.printStackTrace();
-                                commandSender.sendMessageBlocking("执行失败！");
-                            }
-                        }
-                    }
-                    return true;
+        load();
+        Listener listener = new Listener(this);
+        JCommandManager.getInstance().register(this, new BlockingCommand(
+                "rcon", new ArrayList<>(),"rcon插件命令","/rcon [add]或[remove]"
+        ) {
+            @Override
+            public boolean onCommandBlocking(@NotNull CommandSender commandSender, @NotNull List<String> list) {
+                if(list.size() < 1){
+                    return false;
                 }
-            });
-            super.onEnable();
-        }
+                Long groupID;
+                switch (list.get(0)){
+                    case "add":
+                        if(list.size() < 2){
+                            commandSender.sendMessageBlocking("/rcon add 群号");
+                            return true;
+                        }
+                        System.out.println(list.get(1));
+                        groupID = Long.valueOf(list.get(1));
+                        Config config = loadConfig(groupID+".yml");
+                        config.setIfAbsent("groupID", groupID);
+                        config.setIfAbsent("serverAdder", "");
+                        config.setIfAbsent("serverPort", 0);
+                        config.setIfAbsent("passworld", "");
+                        config.setIfAbsent("canPerform", defaultList);
+                        config.save();
+                        commandSender.sendMessageBlocking("添加成功,请去plugins/Rcon/"+groupID+".yml 修改配置,然后/rcon reload 重载配置");
+                    break;
+                    case "reload":
+                        loadConfigFiles();
+                        load();
+                        commandSender.sendMessageBlocking("重载完成！");
+                    break;
+                    case "remove":
+                        if(list.size() < 2){
+                            commandSender.sendMessageBlocking("/rcon remove 群号");
+                            return true;
+                        }
+                        groupID = Long.valueOf(list.get(1));
+                    break;
+                    default:
+                        commandSender.sendMessageBlocking("添加群/rcon add 群号");
+                        commandSender.sendMessageBlocking("删除群/rcon remove 群号");
+                        commandSender.sendMessageBlocking("重载/rcon reload");
+                    return false;
+                }
+                return true;
+            }
+        });
+        super.onEnable();
     }
-    public String command(String command) throws IOException {
+    public String command(String command, Rcon rcon) throws IOException {
         String results = rcon.command(command);
         if (results.length()>0) {
             results = utils.clean(results);
@@ -91,14 +92,100 @@ class Main extends PluginBase {
             return "执行成功！服务器返回空！";
         }
     }
-    public boolean connected(){
+    public void disconnects(){
+        for (Rcon rcon : rcons.values()){
+            try {
+                rcon.disconnect();
+            } catch (IOException e) {
+
+            }
+        }
+        rcons.clear();
+    }
+    public void checkSample(){
+        File file = new File(getDataFolder().getPath()+"/示例.yml");
+        if (!file.exists()){
+            InputStream inputStream = getResources("示例.yml");
+            OutputStream outputStream = null;
+            try {
+                outputStream = new DataOutputStream(new FileOutputStream(file));
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
+            byte[] bytes;
+            try {
+                bytes = new byte[inputStream.available()];
+                inputStream.read(bytes);
+                outputStream.write(bytes);
+                inputStream.close();
+                outputStream.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+        }
+    }
+    public void load(){
+        disconnects();
+        Rcon rcon;
+        Config config;
+        for (Long groupID : configs.keySet()){
+            config = configs.get(groupID);
+
+            if (utils.configNormal(config)) {
+                config.set("groupID", groupID);
+                rcon = connected(config);
+                if (rcon == null) {
+                    continue;
+                }
+                rcons.put(groupID, rcon);
+            }else{
+                getLogger().info(groupID+"配置文件错误!");
+            }
+        }
+    }
+    public Rcon connected(Config config){
         try {
             getLogger().info("连接"+config.getString("serverAdder")+":"+config.getInt("serverPort")+"...");
-            rcon = new Rcon(config.getString("serverAdder"), config.getInt("serverPort"), config.getString("passworld").getBytes());
-            return true;
+            Rcon rcon = new Rcon(config);
+            return rcon;
         } catch (IOException| AuthenticationException e) {
+            getLogger().info("连接"+config.getString("serverAdder")+":"+config.getInt("serverPort")+"失败！请检查密码和服务器地址连通性。");
             e.printStackTrace();
-            return false;
+            return null;
         }
+    }
+    public void loadConfigFiles(){
+        configs.clear();
+        File file = getDataFolder();
+        File[] fs = file.listFiles();
+        Config config;
+        //不懂 为什么不能Config.load(new File())
+        for(File f:fs){
+            if(!f.isDirectory() && f.getName().endsWith(".yml") && !f.getName().equals("示例.yml")){
+                config = loadConfig(f.getName());
+                if (config!=null) {
+                    String fileName = f.getName();
+                    Long groupID = Long.valueOf(fileName.substring(0, fileName.lastIndexOf(".")));
+                    try {
+                        config.setIfAbsent("groupID", 0);
+                        config.setIfAbsent("serverAdder", "");
+                        config.setIfAbsent("serverPort", 0);
+                        config.setIfAbsent("passworld", "");
+                        config.setIfAbsent("canPerform", defaultList);
+                        if (config.getLong("groupID")!=0){
+                            groupID = config.getLong("groupID");
+                        }
+                    } catch (NoSuchElementException e){
+                        //使用文件名
+                    }
+                    configs.put(groupID, config);
+                }
+            }
+        }
+    }
+
+    public Map<Long, Rcon> getRcon() {
+        return rcons;
     }
 }

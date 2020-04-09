@@ -6,36 +6,45 @@ import java.nio.charset.Charset;
 import java.util.Random;
 
 import cn.ltcraft.rcon.ex.AuthenticationException;
+import net.mamoe.mirai.console.plugins.Config;
 
 public class Rcon {
-	
+
 	private final Object sync = new Object();
 	private final Random rand = new Random();
-	
+
 	private int requestId;
 	private Socket socket;
-	
+	private Config config;
+
 	private Charset charset;
 
 	/**
 	 * Create, connect and authenticate a new Rcon object
-	 * 
-	 * @param host Rcon server address
-	 * @param port Rcon server port
-	 * @param password Rcon server password
-	 * 
+	 *
+	 * @param config 配置文件
+	 *
 	 * @throws IOException
 	 * @throws AuthenticationException
 	 */
-	public Rcon(String host, int port, byte[] password) throws IOException, AuthenticationException {
+	public Rcon(Config config) throws IOException, AuthenticationException {
 		// Default charset is utf8
 		this.charset = Charset.forName("UTF-8");
-		
+		this.config = config;
+
 		// Connect to host
-		this.connect(host, port, password);
+		this.connect(config.getString("serverAdder"), config.getInt("serverPort"), config.getString("passworld").getBytes());
 	}
-	
-	/**
+
+    /**
+     *
+     * @return 这个Rcon对应配置文件
+     */
+    public Config getConfig() {
+        return config;
+    }
+
+    /**
 	 * Connect to a rcon server
 	 * 
 	 * @param host Rcon server address

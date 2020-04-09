@@ -1,11 +1,11 @@
 package cn.ltcraft;
 
+import cn.ltcraft.rcon.Rcon;
+import net.mamoe.mirai.console.plugins.Config;
+
 import java.util.LinkedList;
 import java.util.List;
 import java.util.regex.Pattern;
-
-import static cn.ltcraft.Main.isPE;
-import static javafx.scene.input.KeyCode.ESCAPE;
 
 public class utils {
     public static String listToString(List list, char separator) {
@@ -19,7 +19,7 @@ public class utils {
         if (input == null) {
             return null;
         }
-        return Pattern.compile("(?i)" + (isPE?String.valueOf("\u00A7"):"&") + "[0-9A-FK-OR]").matcher(input).replaceAll("");
+        return Pattern.compile("(?i)" + String.valueOf("\u00A7") + "[0-9A-FK-OR]").matcher(input).replaceAll("");
     }
     public static List<String> splitArticle(final String text) {
         List<String> list = new LinkedList<>();
@@ -38,5 +38,8 @@ public class utils {
             }
         }
         return list;
+    }
+    public static Boolean configNormal(Config config){
+        return !config.getString("serverAdder").equals("") && config.getInt("serverPort")>0 && !config.getString("serverAdder").equals("passworld");
     }
 }
