@@ -23,6 +23,11 @@ public class Listener {
                         event.getSubject().sendMessage(this.plugin.command(message, rcon));
                     } catch (IOException e) {
                         this.plugin.getLogger().info("重新连接" + rcon.getConfig().getString("serverAdder") + ":" + rcon.getConfig().getInt("serverPort") + "...");
+                        try {
+                            rcon.disconnect();
+                        } catch (IOException ex) {
+
+                        }
                         Rcon rcon1 = this.plugin.connected(rcon.getConfig());
                         if (rcon1 == null) {
                             event.getSubject().sendMessage("连接Rcon服务器失败！请检查密码和服务器地址连通性。");
