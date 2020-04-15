@@ -28,6 +28,7 @@ public class Listener {
                             event.getSubject().sendMessage("连接Rcon服务器失败！请检查密码和服务器地址连通性。");
                         } else {
                             try {
+                                this.plugin.getRcon().put(event.getGroup().getId(), rcon1);
                                 event.getSubject().sendMessage(this.plugin.command(message, rcon1));
                             } catch (IOException e2) {
                                 e2.printStackTrace();
