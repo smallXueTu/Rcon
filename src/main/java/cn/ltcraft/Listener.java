@@ -22,7 +22,7 @@ public class Listener {
                     try {
                         event.getSubject().sendMessage(this.plugin.command(message, rcon));
                     } catch (IOException e) {
-                        this.plugin.getLogger().info("ÖØĞÂÁ¬½Ó" + rcon.getConfig().getString("serverAdder") + ":" + rcon.getConfig().getInt("serverPort") + "...");
+                        this.plugin.getLogger().info("é‡æ–°è¿æ¥" + rcon.getConfig().getString("serverAdder") + ":" + rcon.getConfig().getInt("serverPort") + "...");
                         try {
                             rcon.disconnect();
                         } catch (IOException ex) {
@@ -30,14 +30,14 @@ public class Listener {
                         }
                         Rcon rcon1 = this.plugin.connected(rcon.getConfig());
                         if (rcon1 == null) {
-                            event.getSubject().sendMessage("Á¬½ÓRcon·şÎñÆ÷Ê§°Ü£¡Çë¼ì²éÃÜÂëºÍ·şÎñÆ÷µØÖ·Á¬Í¨ĞÔ¡£");
+                            event.getSubject().sendMessage("è¿æ¥RconæœåŠ¡å™¨å¤±è´¥ï¼è¯·æ£€æŸ¥å¯†ç å’ŒæœåŠ¡å™¨åœ°å€è¿é€šæ€§ã€‚");
                         } else {
                             try {
                                 this.plugin.getRcon().put(event.getGroup().getId(), rcon1);
                                 event.getSubject().sendMessage(this.plugin.command(message, rcon1));
                             } catch (IOException e2) {
                                 e2.printStackTrace();
-                                event.getSubject().sendMessage("Ö´ĞĞÊ§°Ü£¡");
+                                event.getSubject().sendMessage("æ‰§è¡Œå¤±è´¥ï¼");
                             }
                         }
                     }
