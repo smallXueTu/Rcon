@@ -36,3 +36,7 @@ rcon.port=25575
 ### 使用
 
 在RCON命令前加上`\`，发送到QQ群里。比如发送`\list`以显示在线玩家列表。
+
+## 如何构建
+
+参考：[如何开发Mirai-console插件](https://github.com/mamoe/mirai-console/blob/reborn/PluginDocs/ToStart.MD)
