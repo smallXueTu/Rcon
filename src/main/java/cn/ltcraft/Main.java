@@ -15,10 +15,14 @@ class Main extends PluginBase {
     private Map<Long, Config> configs = new LinkedHashMap<Long, Config>();
     private Map<Long, Rcon> rcons = new LinkedHashMap<Long, Rcon>();
     private List<Long> defaultList;
+    private List<String> defaultPrefixes;
 
     public void onLoad(){
         defaultList = new LinkedList<Long>();
         defaultList.add(123456L);
+        defaultPrefixes = new ArrayList<>();
+        defaultPrefixes.add("\\");
+        defaultPrefixes.add("#");
         checkSample();
         loadConfigFiles();
         super.onLoad();
@@ -57,6 +61,7 @@ class Main extends PluginBase {
                         config.setIfAbsent("serverPort", 0);
                         config.setIfAbsent("password", "");
                         config.setIfAbsent("canPerform", defaultList);
+                        config.setIfAbsent("prefixes", defaultPrefixes);
                         config.save();
                         commandSender.sendMessageBlocking("添加成功,请去plugins/Rcon/"+groupID+".yml 修改配置,然后/rcon reload 重载配置");
                     break;
@@ -169,10 +174,11 @@ class Main extends PluginBase {
                     Long groupID = Long.valueOf(fileName.substring(0, fileName.lastIndexOf(".")));
                     try {
                         config.setIfAbsent("groupID", 0);
-                        config.setIfAbsent("serverAdder", "");
+                        config.setIfAbsent("serverAddr", "");
                         config.setIfAbsent("serverPort", 0);
                         config.setIfAbsent("passworld", "");
                         config.setIfAbsent("canPerform", defaultList);
+                        config.setIfAbsent("prefixes", defaultPrefixes);
                         if (config.getLong("groupID")!=0){
                             groupID = config.getLong("groupID");
                         }

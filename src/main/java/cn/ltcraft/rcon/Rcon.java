@@ -33,7 +33,7 @@ public class Rcon {
 		this.config = config;
 
 		// Connect to host
-		this.connect(config.getString("serverAdder"), config.getInt("serverPort"), config.getString("passworld").getBytes());
+		this.connect(config.getString("serverAddr"), config.getInt("serverPort"), config.getString("password").getBytes());
 	}
 
     /**
