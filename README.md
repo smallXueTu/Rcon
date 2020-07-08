@@ -25,14 +25,34 @@ rcon.port=25575
 ### 插件设置
 
 1. 在Mirai控制台中输入`rcon add 群号`，添加一个QQ群。
-2. 修改Mirai目录下`plugins/RCON`文件夹中，以群号为文件名的配置文件。其中：
-    * `serverAddr`是Minecraft服务器的地址；
-    * `serverPort`是RCON协议的端口，与`server.properties`中的`rcon.port`相同；
-    * `password`是RCON协议的密码，与`rcon.password`相同；
-    * `groupID`是群号；
-    * `canPerform`为列表，列表中的QQ号将有执行RCON命令的权限。
-    * `prefixes`也是一个列表，当信息以列表中的内容开头时，会被解析为Rcon指令。默认有`#`和`\\`。
+2. 修改Mirai目录下`plugins/RCON`文件夹中，以群号为文件名的配置文件。
 3. 在Mirai控制台中输入`rcon reload`以加载配置。
+
+配置文件中各项说明如下：
+
+```yaml
+# 命令前缀。列表中的任意一项开头的信息会被识别为RCON命令，去掉前缀后发送到Minecraft服务器。
+# 比如，在群里发送#list，将执行list指令；发送\help，将执行help指令。
+prefixes:
+- \
+- '#'
+
+# Minecraft服务器地址
+serverAddr: '127.0.0.1'
+
+# Minecraft RCON协议的端口，与server.properties中的rcon.port一致
+serverPort: 25575
+
+# RCON协议的密码，与server.properties中的rcon.password一致
+password: 'PaperMC'
+
+# 对应的QQ群号
+groupID: 716868667
+
+# 该群中可以执行RCON命令的群成员的QQ号
+canPerform:
+- 123456
+```
 
 ### 使用
 
