@@ -22,7 +22,7 @@ public class Listener {
                     try {
                         event.getSubject().sendMessage(this.plugin.command(message, rcon));
                     } catch (IOException e) {
-                        this.plugin.getLogger().info("重新连接" + rcon.getConfig().getString("serverAdder") + ":" + rcon.getConfig().getInt("serverPort") + "...");
+                        this.plugin.getLogger().info("重新连接" + rcon.getConfig().getString("serverAddr") + ":" + rcon.getConfig().getInt("serverPort") + "...");
                         try {
                             rcon.disconnect();
                         } catch (IOException ex) {

@@ -53,9 +53,9 @@ class Main extends PluginBase {
                         groupID = Long.valueOf(list.get(1));
                         Config config = loadConfig(groupID+".yml");
                         config.setIfAbsent("groupID", groupID);
-                        config.setIfAbsent("serverAdder", "");
+                        config.setIfAbsent("serverAddr", "");
                         config.setIfAbsent("serverPort", 0);
-                        config.setIfAbsent("passworld", "");
+                        config.setIfAbsent("password", "");
                         config.setIfAbsent("canPerform", defaultList);
                         config.save();
                         commandSender.sendMessageBlocking("添加成功,请去plugins/Rcon/"+groupID+".yml 修改配置,然后/rcon reload 重载配置");
@@ -146,11 +146,11 @@ class Main extends PluginBase {
     }
     public Rcon connected(Config config){
         try {
-            getLogger().info("连接"+config.getString("serverAdder")+":"+config.getInt("serverPort")+"...");
+            getLogger().info("连接"+config.getString("serverAddr")+":"+config.getInt("serverPort")+"...");
             Rcon rcon = new Rcon(config);
             return rcon;
         } catch (IOException| AuthenticationException e) {
-            getLogger().info("连接"+config.getString("serverAdder")+":"+config.getInt("serverPort")+"失败！请检查密码和服务器地址连通性。");
+            getLogger().info("连接"+config.getString("serverAddr")+":"+config.getInt("serverPort")+"失败！请检查密码和服务器地址连通性。");
             e.printStackTrace();
             return null;
         }
