@@ -1,9 +1,9 @@
 #Rcon服务器地址 如：
-serverAdder: play.ltcraft.cn
+serverAddr: play.ltcraft.cn
 #Rcon服务器端口 如：
 serverPort: 19132
 #Rcon服务器密码 如：
-passworld: 132456
+password: 132456
 #是pe服务器吗 如果是填写true
 #没什么用 只不过是取出颜色符号
 isPe: true

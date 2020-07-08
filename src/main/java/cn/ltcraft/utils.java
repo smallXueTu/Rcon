@@ -40,6 +40,6 @@ public class utils {
         return list;
     }
     public static Boolean configNormal(Config config){
-        return !config.getString("serverAdder").equals("") && config.getInt("serverPort")>0 && !config.getString("serverAdder").equals("passworld");
+        return !config.getString("serverAddr").equals("") && config.getInt("serverPort")>0 && !config.getString("serverAddr").equals("password");
     }
 }

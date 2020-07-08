@@ -15,10 +15,14 @@ class Main extends PluginBase {
     private Map<Long, Config> configs = new LinkedHashMap<Long, Config>();
     private Map<Long, Rcon> rcons = new LinkedHashMap<Long, Rcon>();
     private List<Long> defaultList;
+    private List<String> defaultPrefixes;
 
     public void onLoad(){
         defaultList = new LinkedList<Long>();
         defaultList.add(123456L);
+        defaultPrefixes = new ArrayList<>();
+        defaultPrefixes.add("\\");
+        defaultPrefixes.add("#");
         checkSample();
         loadConfigFiles();
         super.onLoad();
@@ -35,7 +39,7 @@ class Main extends PluginBase {
         load();
         Listener listener = new Listener(this);
         JCommandManager.getInstance().register(this, new BlockingCommand(
-                "rcon", new ArrayList<>(),"rcon²å¼şÃüÁî","/rcon [add]»ò[remove]"
+                "rcon", new ArrayList<>(),"rconæ’ä»¶å‘½ä»¤","/rcon [add]æˆ–[remove]"
         ) {
             @Override
             public boolean onCommandBlocking(@NotNull CommandSender commandSender, @NotNull List<String> list) {
@@ -46,36 +50,37 @@ class Main extends PluginBase {
                 switch (list.get(0)){
                     case "add":
                         if(list.size() < 2){
-                            commandSender.sendMessageBlocking("/rcon add ÈººÅ");
+                            commandSender.sendMessageBlocking("/rcon add ç¾¤å·");
                             return true;
                         }
                         System.out.println(list.get(1));
                         groupID = Long.valueOf(list.get(1));
                         Config config = loadConfig(groupID+".yml");
                         config.setIfAbsent("groupID", groupID);
-                        config.setIfAbsent("serverAdder", "");
+                        config.setIfAbsent("serverAddr", "");
                         config.setIfAbsent("serverPort", 0);
-                        config.setIfAbsent("passworld", "");
+                        config.setIfAbsent("password", "");
                         config.setIfAbsent("canPerform", defaultList);
+                        config.setIfAbsent("prefixes", defaultPrefixes);
                         config.save();
-                        commandSender.sendMessageBlocking("Ìí¼Ó³É¹¦,ÇëÈ¥plugins/Rcon/"+groupID+".yml ĞŞ¸ÄÅäÖÃ,È»ºó/rcon reload ÖØÔØÅäÖÃ");
+                        commandSender.sendMessageBlocking("æ·»åŠ æˆåŠŸ,è¯·å»plugins/Rcon/"+groupID+".yml ä¿®æ”¹é…ç½®,ç„¶å/rcon reload é‡è½½é…ç½®");
                     break;
                     case "reload":
                         loadConfigFiles();
                         load();
-                        commandSender.sendMessageBlocking("ÖØÔØÍê³É£¡");
+                        commandSender.sendMessageBlocking("é‡è½½å®Œæˆï¼");
                     break;
                     case "remove":
                         if(list.size() < 2){
-                            commandSender.sendMessageBlocking("/rcon remove ÈººÅ");
+                            commandSender.sendMessageBlocking("/rcon remove ç¾¤å·");
                             return true;
                         }
                         groupID = Long.valueOf(list.get(1));
                     break;
                     default:
-                        commandSender.sendMessageBlocking("Ìí¼ÓÈº/rcon add ÈººÅ");
-                        commandSender.sendMessageBlocking("É¾³ıÈº/rcon remove ÈººÅ");
-                        commandSender.sendMessageBlocking("ÖØÔØ/rcon reload");
+                        commandSender.sendMessageBlocking("æ·»åŠ ç¾¤/rcon add ç¾¤å·");
+                        commandSender.sendMessageBlocking("åˆ é™¤ç¾¤/rcon remove ç¾¤å·");
+                        commandSender.sendMessageBlocking("é‡è½½/rcon reload");
                     return false;
                 }
                 return true;
@@ -89,7 +94,7 @@ class Main extends PluginBase {
             results = utils.clean(results);
             return results;
         }else {
-            return "Ö´ĞĞ³É¹¦£¡·şÎñÆ÷·µ»Ø¿Õ£¡";
+            return "æ‰§è¡ŒæˆåŠŸï¼æœåŠ¡å™¨è¿”å›ç©ºï¼";
         }
     }
     public void disconnects(){
@@ -103,9 +108,9 @@ class Main extends PluginBase {
         rcons.clear();
     }
     public void checkSample(){
-        File file = new File(getDataFolder().getPath()+"/Ê¾Àı.yml");
+        File file = new File(getDataFolder().getPath()+"/ç¤ºä¾‹.yml");
         if (!file.exists()){
-            InputStream inputStream = getResources("Ê¾Àı.yml");
+            InputStream inputStream = getResources("ç¤ºä¾‹.yml");
             OutputStream outputStream = null;
             try {
                 outputStream = new DataOutputStream(new FileOutputStream(file));
@@ -140,17 +145,17 @@ class Main extends PluginBase {
                 }
                 rcons.put(groupID, rcon);
             }else{
-                getLogger().info(groupID+"ÅäÖÃÎÄ¼ş´íÎó!");
+                getLogger().info(groupID+"é…ç½®æ–‡ä»¶é”™è¯¯!");
             }
         }
     }
     public Rcon connected(Config config){
         try {
-            getLogger().info("Á¬½Ó"+config.getString("serverAdder")+":"+config.getInt("serverPort")+"...");
+            getLogger().info("è¿æ¥"+config.getString("serverAddr")+":"+config.getInt("serverPort")+"...");
             Rcon rcon = new Rcon(config);
             return rcon;
         } catch (IOException| AuthenticationException e) {
-            getLogger().info("Á¬½Ó"+config.getString("serverAdder")+":"+config.getInt("serverPort")+"Ê§°Ü£¡Çë¼ì²éÃÜÂëºÍ·şÎñÆ÷µØÖ·Á¬Í¨ĞÔ¡£");
+            getLogger().info("è¿æ¥"+config.getString("serverAddr")+":"+config.getInt("serverPort")+"å¤±è´¥ï¼è¯·æ£€æŸ¥å¯†ç å’ŒæœåŠ¡å™¨åœ°å€è¿é€šæ€§ã€‚");
             e.printStackTrace();
             return null;
         }
@@ -160,24 +165,25 @@ class Main extends PluginBase {
         File file = getDataFolder();
         File[] fs = file.listFiles();
         Config config;
-        //²»¶® ÎªÊ²Ã´²»ÄÜConfig.load(new File())
+        //ä¸æ‡‚ ä¸ºä»€ä¹ˆä¸èƒ½Config.load(new File())
         for(File f:fs){
-            if(!f.isDirectory() && f.getName().endsWith(".yml") && !f.getName().equals("Ê¾Àı.yml")){
+            if(!f.isDirectory() && f.getName().endsWith(".yml") && !f.getName().equals("ç¤ºä¾‹.yml")){
                 config = loadConfig(f.getName());
                 if (config!=null) {
                     String fileName = f.getName();
                     Long groupID = Long.valueOf(fileName.substring(0, fileName.lastIndexOf(".")));
                     try {
                         config.setIfAbsent("groupID", 0);
-                        config.setIfAbsent("serverAdder", "");
+                        config.setIfAbsent("serverAddr", "");
                         config.setIfAbsent("serverPort", 0);
                         config.setIfAbsent("passworld", "");
                         config.setIfAbsent("canPerform", defaultList);
+                        config.setIfAbsent("prefixes", defaultPrefixes);
                         if (config.getLong("groupID")!=0){
                             groupID = config.getLong("groupID");
                         }
                     } catch (NoSuchElementException e){
-                        //Ê¹ÓÃÎÄ¼şÃû
+                        //ä½¿ç”¨æ–‡ä»¶å
                     }
                     configs.put(groupID, config);
                 }

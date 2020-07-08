@@ -1,6 +1,6 @@
 name: "RCON"
 author: "Angel、"
-version: "0.1.0"
+version: "1.1.0"
 main: "cn.ltcraft.Main"
 info: "连接MC服务器执行服务器命令等"
 depends: []
