@@ -26,16 +26,17 @@ rcon.port=25575
 
 1. 在Mirai控制台中输入`rcon add 群号`，添加一个QQ群。
 2. 修改Mirai目录下`plugins/RCON`文件夹中，以群号为文件名的配置文件。其中：
-    * `serverAdder`是Minecraft服务器的地址；
+    * `serverAddr`是Minecraft服务器的地址；
     * `serverPort`是RCON协议的端口，与`server.properties`中的`rcon.port`相同；
-    * `passworld`是RCON协议的密码，与`rcon.password`相同；
+    * `password`是RCON协议的密码，与`rcon.password`相同；
     * `groupID`是群号；
     * `canPerform`为列表，列表中的QQ号将有执行RCON命令的权限。
+    * `prefixes`也是一个列表，当信息以列表中的内容开头时，会被解析为Rcon指令。默认有`#`和`\\`。
 3. 在Mirai控制台中输入`rcon reload`以加载配置。
 
 ### 使用
 
-在RCON命令前加上`\`，发送到QQ群里。比如发送`\list`以显示在线玩家列表。
+在RCON命令前加上配置文件中`prefixes`中的任意一项，发送到QQ群里。比如发送`\list`或者`#list`以显示在线玩家列表。
 
 ## 如何构建
 
