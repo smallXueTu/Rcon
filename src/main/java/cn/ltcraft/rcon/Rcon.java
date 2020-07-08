@@ -107,7 +107,12 @@ public class Rcon {
 		
 		RconPacket response = this.send(RconPacket.SERVERDATA_EXECCOMMAND, payload.getBytes());
 		
-		return new String(response.getPayload(), this.getCharset());
+		String result =  new String(response.getPayload(), this.getCharset());
+
+		if (result.endsWith("\n")) {
+			return result.substring(0, result.length() - 1);
+		}
+		return result;
 	}
 	
 	private RconPacket send(int type, byte[] payload) throws IOException {
