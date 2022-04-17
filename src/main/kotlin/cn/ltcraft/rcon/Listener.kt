@@ -22,7 +22,7 @@ object Listener {
                         continue//如果玩家设置了多个服务器
                     }
                     val result = rconServer.command(message.contentToString().substring(1).trim())
-                    if (result.isEmpty()){
+                    if (result.isEmpty() || result.clean().isEmpty()){
                         subject.sendMessage("执行完成，服务器无返回！")
                     }
                     subject.sendMessage(result.clean())
