@@ -1,6 +1,5 @@
 package cn.ltcraft.rcon
 
-import cn.ltcraft.rcon.Main.reload
 import cn.ltcraft.rcon.config.RconServerConfig
 import net.mamoe.mirai.console.command.CommandManager.INSTANCE.register
 import net.mamoe.mirai.console.command.CommandManager.INSTANCE.unregister
@@ -8,7 +7,7 @@ import net.mamoe.mirai.console.permission.PermissionService
 import net.mamoe.mirai.console.plugin.jvm.JvmPluginDescription
 import net.mamoe.mirai.console.plugin.jvm.KotlinPlugin
 import net.mamoe.mirai.utils.info
-import java.io.*
+import java.io.File
 import java.nio.file.Files
 
 

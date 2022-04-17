@@ -1,9 +1,6 @@
 package cn.ltcraft.rcon.config
 
-import net.mamoe.mirai.Bot
 import net.mamoe.mirai.console.data.AutoSavePluginData
-import net.mamoe.mirai.console.data.PluginDataExtensions.mapKeys
-import net.mamoe.mirai.console.data.PluginDataExtensions.withEmptyDefault
 import net.mamoe.mirai.console.data.value
 
 /**

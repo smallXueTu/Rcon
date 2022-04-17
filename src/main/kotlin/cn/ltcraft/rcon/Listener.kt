@@ -21,12 +21,19 @@ object Listener {
                         subject.sendMessage("连接" + rcon.serverAddress + ":" + rcon.serverPort + "失败！请检查密码和服务器地址连通性。")
                         continue//如果玩家设置了多个服务器
                     }
-                    subject.sendMessage(rconServer.command(message.contentToString().substring(1).trim()).clean())
+                    val result = rconServer.command(message.contentToString().substring(1).trim())
+                    if (result.isEmpty()){
+                        subject.sendMessage("执行完成，服务器无返回！")
+                    }
+                    subject.sendMessage(result.clean())
                 }
             }
         }
     }
 
+    /**
+     * 清理§x 颜色标签
+     */
     private fun String.clean() = Pattern.compile("(?i)" + "\u00A7" + "[0-9A-FK-OR]").matcher(this).replaceAll("")
 
 }
