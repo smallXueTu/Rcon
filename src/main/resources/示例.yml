@@ -1,9 +1,15 @@
+#备注：
+remarks: test
 #Rcon服务器地址 如：
-serverAddr: play.ltcraft.cn
+serverAddress: play.ltcraft.cn
 #Rcon服务器端口 如：
 serverPort: 19132
 #Rcon服务器密码 如：
 password: 132456
-#是pe服务器吗 如果是填写true
-#没什么用 只不过是取出颜色符号
-isPe: true
+#执行的前缀，只有开头为以下字符才会被当做命令解析：
+prefixes:
+  - \
+  - !
+#可执行的用户QQ号：
+licensor:
+  - 2665337794
