@@ -25,7 +25,7 @@ rcon.port=25575
 ### 插件设置
 
 1. 在Mirai控制台中输入`rcon add 备注`，添加一个Rcon服务器。
-2. 修改Mirai目录下`data/cn.ltcraft.rcon`文件夹中，以群号为文件名的配置文件。
+2. 修改Mirai目录下`data/cn.ltcraft.rcon`文件夹中，以备注为文件名的配置文件。
 3. 在Mirai控制台中输入`rcon reload`以加载配置。
 
 配置文件中各项说明如下：
