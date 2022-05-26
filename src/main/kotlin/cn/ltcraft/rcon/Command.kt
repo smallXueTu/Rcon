@@ -23,6 +23,11 @@ object Command : SimpleCommand(
             """.trimIndent()
             )
         }else {
+            if (args.isEmpty()){
+                sendMessage("添加群/rcon add 备注\n" +
+                        "重载/rcon reload")
+                return
+            }
             val remarks: String
             when(args[0]){
                 "add" -> {
@@ -41,7 +46,7 @@ object Command : SimpleCommand(
                     sendMessage("重载完成！")
                 }
                 else -> {
-                    sendMessage("添加群/rcon add 群号\n" +
+                    sendMessage("添加群/rcon add 备注\n" +
                             "重载/rcon reload")
                 }
             }
