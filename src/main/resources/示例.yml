@@ -8,7 +8,8 @@ serverAddress: play.ltcraft.cn
 serverPort: 19132
 #Rcon服务器密码 如：
 password: 132456
-#执行的前缀，只有开头为以下字符才会被当做命令解析：
+#执行的前缀 只能是一个字符！
+#只有开头为以下字符才会被当做命令解析：
 prefixes:
   - \
   - !
