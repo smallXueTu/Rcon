@@ -16,7 +16,7 @@ import java.nio.file.Files
  */
 object Main : KotlinPlugin(
     JvmPluginDescription(
-        id = "cn.ltcraft.rcon",
+        id = "Rcon",
         version = "2.0.0",
     ) {
         author("Angel、")
