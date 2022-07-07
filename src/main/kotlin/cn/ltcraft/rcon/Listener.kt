@@ -24,8 +24,9 @@ object Listener {
                     val result = rconServer.command(message.contentToString().substring(1).trim())
                     if (result.isEmpty() || result.clean().isEmpty()){
                         subject.sendMessage("执行完成，服务器无返回！")
+                    }else {
+                        subject.sendMessage(result.clean())
                     }
-                    subject.sendMessage(result.clean())
                 }
             }
         }
